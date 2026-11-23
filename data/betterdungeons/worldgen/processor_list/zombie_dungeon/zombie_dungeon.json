@@ -1,0 +1,921 @@
+{
+  "processors": [
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:potted_cornflower",
+      "picks": [
+        {
+          "below": 0.1,
+          "state": {
+            "id": "minecraft:potted_cornflower"
+          }
+        },
+        {
+          "below": 0.2,
+          "state": {
+            "id": "minecraft:potted_brown_mushroom"
+          }
+        },
+        {
+          "below": 0.3,
+          "state": {
+            "id": "minecraft:potted_red_mushroom"
+          }
+        },
+        {
+          "below": 0.7,
+          "state": {
+            "id": "minecraft:potted_dead_bush"
+          }
+        },
+        {
+          "below": 0.8,
+          "state": {
+            "id": "minecraft:potted_poppy"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:flower_pot"
+        }
+      }
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:sea_pickle",
+      "picks": [
+        {
+          "below": 0.1,
+          "states": [
+            {
+              "id": "minecraft:candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:white_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:white_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:white_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:white_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:gray_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:gray_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:gray_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:gray_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:light_gray_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:light_gray_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:light_gray_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:light_gray_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:brown_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:brown_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:brown_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:brown_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:green_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:green_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:green_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:green_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:purple_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:purple_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:purple_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:purple_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:black_candle",
+              "properties": {
+                "candles": "1",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:black_candle",
+              "properties": {
+                "candles": "2",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:black_candle",
+              "properties": {
+                "candles": "3",
+                "lit": "true"
+              }
+            },
+            {
+              "id": "minecraft:black_candle",
+              "properties": {
+                "candles": "4",
+                "lit": "true"
+              }
+            }
+          ]
+        }
+      ],
+      "default": {
+        "states": [
+          {
+            "id": "minecraft:candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:white_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:white_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:white_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:white_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:gray_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:gray_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:gray_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:gray_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:light_gray_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:light_gray_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:light_gray_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:light_gray_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:brown_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:brown_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:brown_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:brown_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:green_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:green_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:green_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:green_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:purple_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:purple_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:purple_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:purple_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:black_candle",
+            "properties": {
+              "candles": "1",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:black_candle",
+            "properties": {
+              "candles": "2",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:black_candle",
+            "properties": {
+              "candles": "3",
+              "lit": "false"
+            }
+          },
+          {
+            "id": "minecraft:black_candle",
+            "properties": {
+              "candles": "4",
+              "lit": "false"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:cobblestone_stairs"
+          ]
+        },
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:air",
+            "minecraft:cave_air",
+            "minecraft:void_air"
+          ],
+          "match_type": "location"
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "lithostitched:set_block",
+          "state_provider": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "id": "minecraft:cave_air"
+            }
+          },
+          "preserve_state": false
+        }
+      ]
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:cobblestone_stairs",
+      "picks": [
+        {
+          "below": 0.4,
+          "state": {
+            "id": "minecraft:mossy_cobblestone_stairs"
+          }
+        },
+        {
+          "below": 0.5,
+          "state": {
+            "id": "minecraft:cobblestone_slab"
+          }
+        },
+        {
+          "below": 0.6,
+          "state": {
+            "id": "minecraft:mossy_cobblestone_slab"
+          }
+        },
+        {
+          "below": 0.7,
+          "state": {
+            "id": "minecraft:cave_air"
+          }
+        },
+        {
+          "below": 0.8,
+          "state": {
+            "id": "minecraft:cobblestone"
+          }
+        },
+        {
+          "below": 0.9,
+          "state": {
+            "id": "minecraft:mossy_cobblestone"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:cobblestone_stairs"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:spawner_mobs",
+      "mobs": [
+        {
+          "entity": {
+            "id": "minecraft:zombie"
+          },
+          "weight": 1
+        }
+      ],
+      "replacement": {
+        "id": "minecraft:spawner"
+      },
+      "max_nearby_entities": 8
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:black_stained_glass",
+      "picks": [],
+      "default": {
+        "state": {
+          "id": "minecraft:spawner"
+        },
+        "nbt": {
+          "id": "minecraft:mob_spawner",
+          "SpawnData": {
+            "entity": {
+              "id": "minecraft:skeleton",
+              "equipment": {
+                "mainhand": {
+                  "id": "minecraft:iron_sword",
+                  "count": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:cobblestone"
+          ]
+        },
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:air",
+            "minecraft:cave_air",
+            "minecraft:void_air"
+          ],
+          "match_type": "location"
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "lithostitched:set_block",
+          "state_provider": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "id": "minecraft:cave_air"
+            }
+          },
+          "preserve_state": false
+        }
+      ]
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:cyan_terracotta"
+          ]
+        },
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:air",
+            "minecraft:cave_air",
+            "minecraft:void_air"
+          ],
+          "match_type": "location"
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "lithostitched:set_block",
+          "state_provider": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "id": "minecraft:cave_air"
+            }
+          },
+          "preserve_state": false
+        }
+      ]
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:cobblestone_stairs"
+          ]
+        },
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:air",
+            "minecraft:cave_air",
+            "minecraft:void_air"
+          ],
+          "match_type": "location"
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "lithostitched:set_block",
+          "state_provider": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "id": "minecraft:cave_air"
+            }
+          },
+          "preserve_state": false
+        }
+      ]
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:warped_stairs"
+          ]
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "lithostitched:set_block",
+          "state_provider": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "id": "minecraft:cave_air"
+            }
+          },
+          "preserve_state": false
+        }
+      ]
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:magenta_stained_glass"
+          ]
+        },
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:air",
+            "minecraft:cave_air",
+            "minecraft:void_air",
+            "minecraft:water",
+            "minecraft:lava"
+          ],
+          "match_type": "location"
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "sunrise:yung_pillar",
+          "target_block": {
+            "id": "minecraft:magenta_stained_glass"
+          },
+          "target_block_output": {
+            "entries": [],
+            "defaultBlockState": {
+              "id": "minecraft:smooth_stone"
+            }
+          },
+          "pillar_states": {
+            "entries": [
+              {
+                "blockState": {
+                  "id": "minecraft:polished_andesite"
+                },
+                "probability": 0.8
+              }
+            ],
+            "defaultBlockState": {
+              "id": "minecraft:cobblestone"
+            }
+          }
+        }
+      ],
+      "else": [
+        {
+          "processor_type": "lithostitched:discard_input"
+        }
+      ]
+    },
+    {
+      "processor_type": "lithostitched:condition",
+      "if_true": [
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:purpur_slab"
+          ]
+        },
+        {
+          "type": "lithostitched:matching_blocks",
+          "blocks": [
+            "minecraft:air",
+            "minecraft:cave_air",
+            "minecraft:void_air",
+            "minecraft:water",
+            "minecraft:lava"
+          ],
+          "match_type": "location"
+        }
+      ],
+      "then": [
+        {
+          "processor_type": "lithostitched:set_block",
+          "state_provider": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "id": "minecraft:smooth_stone_slab"
+            }
+          },
+          "preserve_state": false
+        }
+      ],
+      "else": [
+        {
+          "processor_type": "lithostitched:discard_input"
+        }
+      ]
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "output_state": {
+            "id": "minecraft:mossy_stone_bricks"
+          },
+          "input_predicate": {
+            "block": "minecraft:stone_bricks",
+            "probability": 0.2,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:cracked_stone_bricks"
+          },
+          "input_predicate": {
+            "block": "minecraft:stone_bricks",
+            "probability": 0.3,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:cave_air"
+          },
+          "input_predicate": {
+            "block": "minecraft:air",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:cobblestone"
+          },
+          "input_predicate": {
+            "block": "minecraft:mossy_cobblestone",
+            "probability": 0.3,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:coarse_dirt"
+          },
+          "input_predicate": {
+            "block": "minecraft:mossy_cobblestone",
+            "probability": 0.5,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:mossy_cobblestone"
+          },
+          "input_predicate": {
+            "block": "minecraft:cobblestone",
+            "probability": 0.2,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        }
+      ]
+    }
+  ]
+}

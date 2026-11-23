@@ -1,19 +1,22 @@
 # YUNG's Better Dungeons for Sunrise
 
-Vanilla's monster rooms replaced by YUNG's small dungeons, with banners, spawners and loot piles.
+Vanilla's monster rooms replaced by YUNG's dungeons: small dungeons, zombie crypts and skeleton halls, with spawners and loot.
 
-A port of [YUNG's Better Dungeons](https://github.com/YUNG-GANG/YUNGs-Better-Dungeons) by YUNGNICKYOUNG and Acarii to [Sunrise](https://playsunrise.net) (Minecraft Java 26.3). This version carries the original's small dungeon; its structure type and processors are Rust, read from the original's behaviour.
+A port of [YUNG's Better Dungeons](https://github.com/YUNG-GANG/YUNGs-Better-Dungeons) by YUNGNICKYOUNG and Acarii to [Sunrise](https://playsunrise.net) (Minecraft Java 26.3). The small dungeon's structure type and processors are Rust, read from the original's behaviour; the zombie and skeleton dungeons are the original's jigsaw structures, with its processors written as data.
 
 ## What it does
 
 - The small dungeon underground: six room shells (5x5 to 9x9), zombie, skeleton and spider variants, with loot piles, chests, banners, ceiling props and a spawner, assembled from the original's templates and weights.
-- The original's placement (its structure set and biome tag) and loot tables.
+- Zombie dungeons: crypts of tombs and cubbies near the surface, with zombie spawners, skeleton spawners in the tombstones, flower pots and worn cobblestone.
+- Skeleton dungeons: deep halls of ruined stone brick with skeleton spawners, candles and legs down to the cave floor.
+- The original's placement (its structure sets and biome tags) and loot tables.
 - Vanilla monster rooms no longer generate where the small dungeon can, as in the original (its "Remove Vanilla Dungeons" option is on by default).
 - Operator command `/betterdungeons status` describes the generator.
 
 ## Differences from the original
 
-- Only the small dungeon is ported: the zombie, skeleton and spider dungeons, the small Nether dungeon and their own processors are not yet.
+- The spider dungeon and the small Nether dungeon are not ported yet.
+- The zombie dungeon's staircase up to the surface is not dug: its stairs end where the original's would when the surface is out of reach.
 - The status command is this port's own; the original has none.
 
 ## Building
