@@ -19,5 +19,13 @@ Differences from the original:
 categories = ["worldgen", "adventure"]
 
 [[screenshots]]
-path = "page/world.png"
-caption = "A small dungeon with its spawner and loot piles."
+path = "page/banner-room.png"
+caption = "A small dungeon with its banner, spawner, chains and skull."
+
+[[screenshots]]
+path = "page/natural-dungeon.png"
+caption = "A small dungeon generated underground, with its chest and barrels."
+
+[[screenshots]]
+path = "page/chest-loot.png"
+caption = "A dungeon chest's loot."
