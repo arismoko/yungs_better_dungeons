@@ -15,7 +15,9 @@ What it does:
 
 Differences from the original:
 
-- The spider dungeon and the small Nether dungeon are not ported yet.
+- The spider dungeon is not ported yet, so "Professional Dungeoneer" is not carried either.
+- The small Nether dungeon is included but off, as in the original's default: add biomes to the `betterdungeons:has_structure/small_nether_dungeon` tag with a data pack to turn it on. The nether brick stair in front of its entrance, the two-banner limit and the wither skull and blaze rod options are not carried.
+- The dungeons' settings are the original's defaults and cannot be changed.
 - The zombie dungeon's staircase up to the surface is not dug: its stairs end where the original's would when the surface is out of reach.
 - The status command is this port's own; the original has none.
 """
