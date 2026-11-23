@@ -43,6 +43,7 @@ pub fn register(r: &mut dyn Registrar, _cx: &RegistrationContext) {
     }
     let _ = BLOCKS.set(keys);
     r.register_structure_type(TYPE_ID, SmallDungeonType);
+    crate::spider_type::register(r);
 }
 
 /// The registered type: `yungsapi:yung_jigsaw`'s assembly, as this port's own code.
@@ -331,7 +332,7 @@ fn decode_config(tag: &Tag) -> Option<runtime::Config> {
     })
 }
 
-fn string(value: &str) -> Tag {
+pub(crate) fn string(value: &str) -> Tag {
     Tag::String(value.into())
 }
 
@@ -341,7 +342,7 @@ fn compound_tag<const N: usize>(entries: [(&str, Tag); N]) -> Tag {
 }
 
 /// A compound on its own, for `PieceContext::block_entity`.
-fn compound<const N: usize>(entries: [(&str, Tag); N]) -> Compound {
+pub(crate) fn compound<const N: usize>(entries: [(&str, Tag); N]) -> Compound {
     let mut out = Compound::new();
     for (name, value) in entries {
         // `Compound`'s key type is the SDK's Java string; it converts from `&str`.
@@ -352,7 +353,7 @@ fn compound<const N: usize>(entries: [(&str, Tag); N]) -> Compound {
 
 /// A compound's entry. `Compound`'s key type is not re-exported by the API, so
 /// the lookup compares the stored keys' text instead of naming one.
-fn lookup<'a>(tag: &'a Compound, name: &str) -> Option<&'a Tag> {
+pub(crate) fn lookup<'a>(tag: &'a Compound, name: &str) -> Option<&'a Tag> {
     tag.iter()
         .find(|(key, _)| key.to_string_lossy() == name)
         .map(|(_, value)| value)
@@ -417,7 +418,7 @@ fn text_of(tag: &Compound, name: &str) -> Option<String> {
     }
 }
 
-fn int_of(tag: &Compound, name: &str) -> Option<i32> {
+pub(crate) fn int_of(tag: &Compound, name: &str) -> Option<i32> {
     match lookup(tag, name)? {
         Tag::Int(value) => Some(*value),
         Tag::Short(value) => Some(i32::from(*value)),
@@ -433,7 +434,7 @@ fn text_of_tag(tag: &Tag, name: &str) -> Option<String> {
     }
 }
 
-fn int_of_tag(tag: &Tag, name: &str) -> Option<i32> {
+pub(crate) fn int_of_tag(tag: &Tag, name: &str) -> Option<i32> {
     match tag.get(name)? {
         Tag::Int(value) => Some(*value),
         Tag::Short(value) => Some(i32::from(*value)),
