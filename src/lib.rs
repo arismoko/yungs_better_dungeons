@@ -1,10 +1,9 @@
-//! `betterdungeons` — YUNG's Better Dungeons for Horizon, slice 1: the small dungeon.
+//! `betterdungeons` — YUNG's Better Dungeons: the small dungeon.
 //!
 //! | Moment | What the port does |
 //! |---|---|
 //! | [`Mod::register`] | registers the structure type `betterdungeons:small_dungeon_type` and requests the blocks its templates name |
-//! | [`Mod::register_commands`] | declares `/betterdungeons status` |
-//! | [`Mod::run_mod_command`] | answers it from [`runtime`] |
+//! | [`Mod::register_commands`] | registers `/betterdungeons status`, answered from [`runtime`] |
 //!
 //! The structure's own code lives on the registered type: [`support::SmallDungeonType`]
 //! assembles the jar's carried jigsaw templates through [`runtime::assemble`], and
@@ -19,15 +18,12 @@ pub mod runtime;
 pub mod support;
 pub mod templates;
 
-use mod_api::{
-    self, Flow, Hooks, RegisterCommandsEvent, Registrar, RegistrationContext, RunModCommandEvent,
-    ServerHost,
-};
+use mod_api::{self, Hooks, RegisterCommandsEvent, Registrar, RegistrationContext, ServerHost};
 
 #[derive(Default)]
 struct Mod;
 
-#[mod_api::horizon_mod]
+#[mod_api::sunrise_mod]
 impl Hooks for Mod {
     /// Once, at startup: the structure type and the blocks it places.
     fn register(&self, r: &mut dyn Registrar, cx: &RegistrationContext) {
@@ -37,14 +33,5 @@ impl Hooks for Mod {
     /// Declare `/betterdungeons …` in the server's command tree.
     fn register_commands(&self, _host: &mut dyn ServerHost, event: &mut RegisterCommandsEvent<'_>) {
         support::declare_commands(event.commands);
-    }
-
-    /// Answer `/betterdungeons …` and take the command.
-    fn run_mod_command(
-        &self,
-        host: &mut dyn ServerHost,
-        event: &mut RunModCommandEvent<'_>,
-    ) -> Flow {
-        support::run_command(host, event)
     }
 }

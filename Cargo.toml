@@ -1,20 +1,14 @@
 [package]
-# Port of YUNG's Better Dungeons 1.21.1-NeoForge-5.1.4 (YUNGNICKYOUNG, Acarii;
-# LGPL-3.0-only), Minecraft Java 1.21.1 NeoForge; the port targets Horizon 26.3 at
-# the pin in horizon-mod.toml. Clean-room Rust rewrite from the mod's behaviour
-# (notes.md); local-only until publishing is approved, publishable under
-# LGPL-3.0-only with this source.
-#
-# Cargo's name and version are not the mod's identity: horizon-mod.toml is.
-name = "betterdungeons"
-version = "0.2.0"
+name = "mod-betterdungeons"
+version = "0.3.0"
 edition = "2024"
 license = "LGPL-3.0-only"
-description = "YUNG's Better Dungeons for Horizon: the small dungeon, assembled by the port's own structure type"
+description = "YUNG's Better Dungeons for Sunrise: the small dungeon, assembled by the mod's own structure type"
+# Ported from: YUNG's Better Dungeons 1.21.1-NeoForge-5.1.4 (YUNG-GANG/YUNGs-Better-Dungeons, LGPL-3.0-only), Minecraft Java 1.21.1. The data files are the upstream mod's own,
+# upgraded to 26.3; the Rust is written from the behaviour read in the upstream source.
+# Cargo's name and version are not the mod's identity: sunrise-mod.toml is.
 publish = false
 
 [dependencies]
-# The pinned SDK's API crate, fetched into .horizon/sdk/ by any `cargo horizon-mod` command (the
-# launcher builds against its own copy of the same build). Any other registry dependency must be
-# pinned with `horizon-launcher native-lock .` before building.
-horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+# The pinned SDK's API crate, fetched into .sunrise/sdk/ by any `cargo sunrise-mod` command.
+sunrise-mod-api = { path = ".sunrise/sdk/api/crates/sunrise-mod-api" }

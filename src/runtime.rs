@@ -33,7 +33,7 @@ use crate::templates::{self, Block, Jigsaw, Template};
 
 /// A source of randomness, in vanilla's `RandomSource` terms.
 ///
-/// The game's `StructureRandom` implements it directly, so the draws a structure
+/// The game's `RandomSource` implements it directly, so the draws a structure
 /// makes are the ones vanilla's own types would make from the same context; the
 /// readout uses [`SplitMix`], which is deterministic for a seed and needs no game.
 pub trait Rng {

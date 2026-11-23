@@ -3,7 +3,7 @@
 //! Every decision is in [`crate::runtime`]; this file only speaks the game's
 //! vocabulary. The junction between the two is three small adapters:
 //!
-//! * [`ContextRandom`] makes the game's `StructureRandom` the assembly's [`runtime::Rng`];
+//! * [`ContextRandom`] makes the game's `RandomSource` the assembly's [`runtime::Rng`];
 //! * [`ContextWorld`] answers the processors' block questions from `PieceContext`;
 //! * [`states`] resolves the generated state table to the game's `BlockState`s once
 //!   per assembly, from the metadata the worker context lends.
@@ -12,10 +12,9 @@ use crate::pools;
 use crate::runtime::{self, Payload, Piece, Rotation};
 use crate::templates;
 use mod_api::{
-    self, BlockKey, BlockMetadata, BlockState, BoundingBox, Command, Compound, Flow,
-    FoundStructure, GenerationContext, PieceContext, Registrar, RegistrationContext,
-    RunModCommandEvent, ServerHost, StateConstraint, StructureError, StructurePiece,
-    StructureRandom, StructureType, Tag, Text,
+    self, BlockKey, BlockMetadata, BlockState, BoundingBox, Command, CommandRegistration, Compound,
+    FoundStructure, GenerationContext, PieceContext, RandomSource, Registrar, RegistrationContext,
+    ServerHost, StateConstraint, StructureError, StructurePiece, StructureType, Tag, Text,
 };
 use std::sync::{Arc, Mutex, OnceLock};
 
@@ -278,7 +277,7 @@ fn states(metadata: &dyn BlockMetadata) -> Result<Vec<BlockState>, StructureErro
 
 /// The game's structure random, as the assembly's [`runtime::Rng`].
 struct ContextRandom<'a> {
-    random: &'a mut dyn StructureRandom,
+    random: &'a mut dyn RandomSource,
 }
 
 impl runtime::Rng for ContextRandom<'_> {
@@ -443,25 +442,21 @@ fn int_of_tag(tag: &Tag, name: &str) -> Option<i32> {
     }
 }
 
-/// The commands, each usage on its own.
-pub fn declare_commands(commands: &mut Vec<Command>) {
-    commands.push(Command::new("betterdungeons"));
-    commands.push(Command::new("betterdungeons status"));
+/// The operator commands (level 2, as vanilla's debug commands): `/betterdungeons` (usage) and `/betterdungeons status`.
+pub fn declare_commands(commands: &mut Vec<CommandRegistration>) {
+    commands.push(Command::op("betterdungeons", 2).executes(|host, _, _| Ok(send(host, usage()))));
+    commands.push(
+        Command::op("betterdungeons status", 2).executes(|host, _, _| Ok(send(host, status()))),
+    );
 }
 
-/// Answer `/betterdungeons …` and take it; `Flow::Continue` for a line that is not ours.
-pub fn run_command(host: &mut dyn ServerHost, event: &mut RunModCommandEvent<'_>) -> Flow {
-    let invocation = event.command;
-    let path: Vec<&str> = invocation.literals.iter().map(String::as_str).collect();
-    let lines = match path.as_slice() {
-        ["betterdungeons"] => usage(),
-        ["betterdungeons", "status"] => status(),
-        _ => return Flow::Continue,
-    };
+/// Send `lines` to the command's source; the command's result is their count.
+fn send(host: &mut dyn ServerHost, lines: Vec<String>) -> i32 {
+    let count = lines.len() as i32;
     for line in lines {
         let _ = host.commands().feedback(Text::literal(line));
     }
-    Flow::Cancel
+    count
 }
 
 fn usage() -> Vec<String> {
