@@ -2,6 +2,258 @@
   "processors": [
     {
       "processor_type": "sunrise:pick",
+      "block": "minecraft:skeleton_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:skeleton_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:skeleton_wall_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:skeleton_wall_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:wither_skeleton_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:wither_skeleton_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:wither_skeleton_wall_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:wither_skeleton_wall_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:zombie_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:zombie_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:zombie_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:zombie_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:creeper_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:creeper_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:creeper_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:creeper_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:piglin_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:piglin_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:piglin_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:piglin_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:player_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:player_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:player_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:player_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:dragon_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:dragon_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:dragon_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:dragon_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
       "block": "minecraft:potted_cornflower",
       "picks": [
         {

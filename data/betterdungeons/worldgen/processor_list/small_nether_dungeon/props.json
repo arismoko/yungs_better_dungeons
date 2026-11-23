@@ -1,0 +1,336 @@
+{
+  "processors": [
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:skeleton_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:skeleton_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:skeleton_wall_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:skeleton_wall_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:wither_skeleton_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:wither_skeleton_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:wither_skeleton_wall_skull",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:wither_skeleton_wall_skull"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:zombie_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:zombie_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:zombie_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:zombie_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:creeper_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:creeper_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:creeper_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:creeper_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:piglin_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:piglin_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:piglin_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:piglin_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:player_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:player_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:player_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:player_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:dragon_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:dragon_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "sunrise:pick",
+      "block": "minecraft:dragon_wall_head",
+      "picks": [
+        {
+          "below": 0.167,
+          "state": {
+            "id": "minecraft:dragon_wall_head"
+          }
+        }
+      ],
+      "default": {
+        "state": {
+          "id": "minecraft:air"
+        }
+      },
+      "keep_properties": true
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "output_state": {
+            "id": "minecraft:nether_quartz_ore"
+          },
+          "input_predicate": {
+            "block": "minecraft:nether_gold_ore",
+            "probability": 0.5,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:chain"
+          },
+          "input_predicate": {
+            "block": "minecraft:gray_stained_glass",
+            "probability": 0.5,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:air"
+          },
+          "input_predicate": {
+            "block": "minecraft:gray_stained_glass",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:lava"
+          },
+          "input_predicate": {
+            "block": "minecraft:orange_wool",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:crying_obsidian"
+          },
+          "input_predicate": {
+            "block": "minecraft:purple_terracotta",
+            "probability": 0.25,
+            "predicate_type": "minecraft:random_block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        },
+        {
+          "output_state": {
+            "id": "minecraft:obsidian"
+          },
+          "input_predicate": {
+            "block": "minecraft:purple_terracotta",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          }
+        }
+      ]
+    }
+  ]
+}

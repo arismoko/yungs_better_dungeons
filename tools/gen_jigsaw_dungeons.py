@@ -1,4 +1,4 @@
-"""Writes the zombie and skeleton dungeons as data, from YUNG's Better Dungeons' own data folder.
+"""Writes the zombie, skeleton and small Nether dungeons as data, from YUNG's Better Dungeons' own data folder.
 
 usage: python3 tools/gen_jigsaw_dungeons.py <YUNGs-Better-Dungeons>/Common/src/main/resources/data/betterdungeons
 
@@ -12,7 +12,7 @@ import json, os, shutil, sys
 
 SRC = sys.argv[1]
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'betterdungeons')
-DUNGEONS = ['zombie_dungeon', 'skeleton_dungeon']
+DUNGEONS = ['zombie_dungeon', 'skeleton_dungeon', 'small_nether_dungeon']
 
 AIR = ['minecraft:air', 'minecraft:cave_air', 'minecraft:void_air']
 OPEN = AIR + ['minecraft:water', 'minecraft:lava']
@@ -90,9 +90,43 @@ STAIR_ENTRIES = [('minecraft:mossy_cobblestone_stairs', 0.4), ('minecraft:cobble
                  ('minecraft:mossy_cobblestone_slab', 0.1), ('minecraft:cave_air', 0.1),
                  ('minecraft:cobblestone', 0.1), ('minecraft:mossy_cobblestone', 0.1)]
 
+SKULLS = ['skeleton_skull', 'wither_skeleton_skull', 'zombie_head', 'creeper_head', 'piglin_head',
+          'player_head', 'dragon_head']
+HEADS = [pick('minecraft:' + b, [{'below': 0.167, 'state': st('minecraft:' + b)}], {'state': st('minecraft:air')}, keep=True)
+         for skull in SKULLS for b in (skull, skull.replace('_skull', '_wall_skull').replace('_head', '_wall_head'))]
+
+
+def banner(block, patterns, name, colour):
+    return {'state': st(block), 'nbt': {'id': 'minecraft:banner',
+            'patterns': [{'pattern': 'minecraft:' + p, 'color': c} for p, c in patterns],
+            'CustomName': json.dumps({'text': name, 'color': colour, 'italic': False})}}
+
+
+NETHER_BANNERS = {
+    'skeleton': banner('minecraft:black_wall_banner', [('curly_border', 'white'), ('stripe_center', 'white'), ('stripe_bottom', 'black'),
+                       ('stripe_top', 'white'), ('creeper', 'white'), ('gradient', 'black')], 'Vengeful Banner', 'dark_gray'),
+    'wither_skeleton': banner('minecraft:red_wall_banner', [('curly_border', 'black'), ('stripe_center', 'black'), ('stripe_bottom', 'red'),
+                              ('creeper', 'black'), ('stripe_top', 'black'), ('gradient_up', 'black')], 'Banner of Decay', 'dark_purple'),
+    'zombified_piglin': banner('minecraft:pink_wall_banner', [('stripe_left', 'green'), ('triangles_top', 'black'), ('triangles_top', 'pink'),
+                               ('stripe_center', 'pink'), ('half_vertical_mirror', 'light_gray'), ('diagonal_right', 'green'),
+                               ('creeper', 'white'), ('half_horizontal_mirror', 'pink'), ('rhombus', 'pink'), ('piglin', 'black'),
+                               ('gradient_up', 'pink'), ('stripe_bottom', 'black')], 'Banner of Pork', 'light_purple'),
+    'blaze': banner('minecraft:red_wall_banner', [('stripe_small', 'yellow'), ('triangle_top', 'red'), ('triangle_top', 'red'),
+                    ('flower', 'orange'), ('skull', 'yellow'), ('curly_border', 'red'), ('gradient_up', 'black')], 'Banner of Rage', 'gold'),
+}
+
+NETHER_WITHER_GEAR = {
+    'equipment': {slot: {'id': 'minecraft:netherite_' + piece, 'count': 1}
+                  for slot, piece in (('feet', 'boots'), ('legs', 'leggings'), ('chest', 'chestplate'), ('head', 'helmet'))},
+    'drop_chances': {'feet': 0.0, 'legs': 0.0, 'chest': 0.0, 'head': 0.0},
+}
+NETHER_WITHER_GEAR['equipment']['mainhand'] = {'id': 'minecraft:stone_sword', 'count': 1}
+
 JAVA = {
-    # Heads and nether blocks stay as they are with the original's default config.
-    'betterdungeons:head_processor': [],
+    # HeadProcessor: a skull stays one time in six (0.167), else it is air. Nether blocks stay
+    # as they are with the original's default config (`enableNetherBlocks`).
+    'betterdungeons:head_processor': HEADS,
+    'betterdungeons:small_nether_dungeon_head_processor': HEADS,
     'betterdungeons:nether_block_processor': [],
     'betterdungeons:candle_processor': CANDLE,
     # ZombieDungeonFlowerPotProcessor.
@@ -161,7 +195,35 @@ JAVA = {
         {'processor_type': 'sunrise:yung_pillar', 'target_block': st('minecraft:blue_stained_glass'),
          'target_block_output': randomizer('minecraft:cobblestone', []),
          'pillar_states': randomizer('minecraft:cobblestone', [('minecraft:mossy_cobblestone', 0.5)])}],
+    # SmallNetherDungeonLavaBlockProcessor: orange wool is lava.
+    'betterdungeons:small_nether_dungeon_lava_block_processor': [pick('minecraft:orange_wool', [], {'state': st('minecraft:lava')})],
+    # SmallNetherDungeonEntranceStairsProcessor: brick stairs become nether bricks. The nether
+    # brick stair it also writes in front of them is not placed (a processor writes only its block).
+    'betterdungeons:small_nether_dungeon_entrance_stairs_processor': [
+        pick('minecraft:brick_stairs', [], {'state': st('minecraft:nether_bricks')})],
+    # SmallNetherDungeonLegProcessor: nether brick legs down to the ground.
+    'betterdungeons:small_nether_dungeon_leg_processor': [
+        {'processor_type': 'sunrise:yung_pillar', 'target_block': st('minecraft:orange_terracotta'),
+         'target_block_output': randomizer('minecraft:nether_bricks', []),
+         'pillar_states': randomizer('minecraft:nether_bricks', [])}],
 }
+
+SPAWNER_MOBS = {'skeleton': {'id': 'minecraft:skeleton'}, 'zombified_piglin': {'id': 'minecraft:zombified_piglin'},
+                'blaze': {'id': 'minecraft:blaze'}, 'wither_skeleton': dict({'id': 'minecraft:wither_skeleton'}, **NETHER_WITHER_GEAR)}
+
+
+def parameterised(p):
+    """The Java processors that take a parameter in their list."""
+    kind = p['processor_type']
+    if kind == 'betterdungeons:small_nether_dungeon_banner_processor':
+        # Each placeholder wall banner is one of the dungeon's design one time in ten, else gone.
+        # The original also stops at two banners a piece; processor data has no count.
+        return [pick('minecraft:gray_wall_banner', [dict(below=0.1, **NETHER_BANNERS[p['dungeon_type']])],
+                     {'state': st('minecraft:air')}, keep=True)]
+    if kind == 'betterdungeons:small_nether_dungeon_mob_spawner_processor':
+        mob = p['spawner_mob'].split(':')[1]
+        return [dict(spawner('minecraft:' + mob), mobs=[{'entity': SPAWNER_MOBS[mob], 'weight': 1}])]
+    return None
 
 
 def state_json(s):
@@ -184,7 +246,7 @@ def translate(processors):
                 rules.append(r)
             out.append({'processor_type': kind, 'rules': rules})
         else:
-            out.extend(JAVA[kind])
+            out.extend(parameterised(p) or JAVA[kind])
     return out
 
 
@@ -197,6 +259,23 @@ def copy(sub):
     else:
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         shutil.copy(src, dst)
+
+
+def nether_dungeon():
+    """The small Nether dungeon is off in the original unless its config enables it
+    (`smallNetherDungeons.enabled`, default false). Its structure is a plain YUNG jigsaw here, and its
+    biome tag is left empty: a data pack that lists biomes in it turns the dungeon on."""
+    path = os.path.join(OUT, 'worldgen/structure/small_nether_dungeon.json')
+    structure = json.load(open(path))
+    structure['type'] = 'yungsapi:yung_jigsaw'
+    structure.setdefault('use_expansion_hack', False)
+    structure.setdefault('adapt_noise', False)
+    with open(path, 'w') as f:
+        json.dump(structure, f, indent=2)
+        f.write('\n')
+    with open(os.path.join(OUT, 'tags/worldgen/biome/has_structure/small_nether_dungeon.json'), 'w') as f:
+        json.dump({'replace': False, 'values': []}, f, indent=2)
+        f.write('\n')
 
 
 def main():
@@ -216,6 +295,7 @@ def main():
             with open(os.path.join(out, name), 'w') as f:
                 json.dump({'processors': translate(data['processors'])}, f, indent=2)
                 f.write('\n')
+    nether_dungeon()
 
 
 if __name__ == '__main__':
