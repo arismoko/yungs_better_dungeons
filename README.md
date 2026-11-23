@@ -12,13 +12,14 @@ A port of [YUNG's Better Dungeons](https://github.com/YUNG-GANG/YUNGs-Better-Dun
 - Spider dungeons: a cave of two winding tunnels with side tunnels, cobwebbed and shelled in cobblestone, ending in a wool-wrapped nest with a cave spider spawner and egg rooms holding loot chests or spider spawners.
 - The original's placement (its structure sets and biome tags) and loot tables.
 - Vanilla monster rooms no longer generate where the small dungeon can, as in the original (its "Remove Vanilla Dungeons" option is on by default).
+- Settings, applied when a world loads: skulls and heads, Nether blocks, the small dungeon's banner limit, its fewest and most chests, and its ore props.
 - Operator command `/betterdungeons status` describes the generator.
 
 ## Differences from the original
 
 - The spider cave's web check treats a block as solid where the original asks whether it occludes, and a fluid is water, lava, a water plant or a waterlogged block; the two differ only on unusual blocks such as slabs.
 - The small Nether dungeon is included but off, as in the original's default: add biomes to the `betterdungeons:has_structure/small_nether_dungeon` tag with a data pack to turn it on. The nether brick stair in front of its entrance, the two-banner limit and the wither skull and blaze rod options are not carried.
-- The dungeons' settings are the original's defaults and cannot be changed.
+- The skulls and Nether blocks settings change the small dungeon only; the zombie, skeleton and Nether dungeons keep the original's defaults. The zombie staircase length setting is not carried.
 - The zombie dungeon's staircase up to the surface is not dug: its stairs end where the original's would when the surface is out of reach.
 - The status command is this port's own; the original has none.
 
