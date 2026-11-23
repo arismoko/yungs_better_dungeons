@@ -9,14 +9,15 @@
 //!   per assembly, from the metadata the worker context lends.
 
 use crate::pools;
-use crate::runtime::{self, Payload, Piece, Rotation};
+use crate::runtime::{self, Payload, Piece, Rotation, Settings};
 use crate::templates;
 use mod_api::{
     self, BlockKey, BlockMetadata, BlockState, BoundingBox, Command, CommandRegistration, Compound,
-    FoundStructure, GenerationContext, PieceContext, RandomSource, Registrar, RegistrationContext,
-    ServerHost, StateConstraint, StructureError, StructurePiece, StructureType, Tag, Text,
+    FoundStructure, GenerationContext, Host, PieceContext, RandomSource, Registrar,
+    RegistrationContext, ServerHost, SettingSpec, StateConstraint, StructureError, StructurePiece,
+    StructureType, Tag, Text,
 };
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::{Arc, Mutex, OnceLock, RwLock};
 
 /// The mod's id, which is also its resource namespace.
 const MOD_ID: &str = "betterdungeons";
@@ -31,8 +32,99 @@ static BLOCKS: OnceLock<Vec<BlockKey>> = OnceLock::new();
 /// The last reason generation refused, for `/betterdungeons status`.
 static REFUSAL: Mutex<Option<String>> = Mutex::new(None);
 
+/// The settings the server that runs now started with; the original's defaults until one starts.
+/// Worldgen workers read it, and only [`read_settings`] writes it.
+static SETTINGS: RwLock<Settings> = RwLock::new(Settings::DEFAULT);
+
+/// The setting keys, one per `ConfigModule` value this code reads.
+const BANNER_MAX: &str = "small_dungeon_max_banners";
+const CHEST_MIN: &str = "small_dungeon_min_chests";
+const CHEST_MAX: &str = "small_dungeon_max_chests";
+const ORE_PROPS: &str = "small_dungeon_ore_props";
+const HEADS: &str = "enable_heads";
+const NETHER_BLOCKS: &str = "enable_nether_blocks";
+
+/// The chest counts' slider top: the original's `define` takes any integer, and a small dungeon
+/// has fewer chest props than this.
+const CHEST_COUNT_MAX: f64 = 8.0;
+
+fn declare_settings(r: &mut dyn Registrar) {
+    let defaults = Settings::DEFAULT;
+    let label = |key: &str| format!("{MOD_ID}.configuration.{key}");
+    let specs = [
+        SettingSpec::toggle(HEADS, label(HEADS), defaults.enable_heads),
+        SettingSpec::toggle(
+            NETHER_BLOCKS,
+            label(NETHER_BLOCKS),
+            defaults.enable_nether_blocks,
+        ),
+        // `defineInRange("Small Dungeon Max Banner Count", 2, 0, 8)`.
+        SettingSpec::range(
+            BANNER_MAX,
+            label(BANNER_MAX),
+            0.0,
+            8.0,
+            1.0,
+            f64::from(defaults.banner_max_count),
+        ),
+        SettingSpec::range(
+            CHEST_MIN,
+            label(CHEST_MIN),
+            0.0,
+            CHEST_COUNT_MAX,
+            1.0,
+            f64::from(defaults.chest_min_count),
+        ),
+        SettingSpec::range(
+            CHEST_MAX,
+            label(CHEST_MAX),
+            0.0,
+            CHEST_COUNT_MAX,
+            1.0,
+            f64::from(defaults.chest_max_count),
+        ),
+        SettingSpec::toggle(ORE_PROPS, label(ORE_PROPS), defaults.enable_ore_props),
+    ];
+    for spec in specs {
+        let tooltip = format!("{}.tooltip", spec.label);
+        let _ = r.register_setting(spec.tooltip(tooltip));
+    }
+}
+
+/// Take the player's settings for the server about to start: NeoForge reads a `worldRestart`
+/// value when the world loads, and generation reads [`settings`] from then on.
+pub fn read_settings(host: &dyn Host) {
+    let toggle = |key: &str, default: bool| match host.setting(MOD_ID, key).as_deref() {
+        Some("true") => true,
+        Some("false") => false,
+        _ => default,
+    };
+    let count = |key: &str, default: i32| {
+        host.setting(MOD_ID, key)
+            .and_then(|value| value.parse::<f64>().ok())
+            .filter(|value| value.is_finite())
+            .map_or(default, |value| value.round() as i32)
+    };
+    let defaults = Settings::DEFAULT;
+    let read = Settings {
+        banner_max_count: count(BANNER_MAX, defaults.banner_max_count),
+        chest_min_count: count(CHEST_MIN, defaults.chest_min_count),
+        chest_max_count: count(CHEST_MAX, defaults.chest_max_count),
+        enable_heads: toggle(HEADS, defaults.enable_heads),
+        enable_nether_blocks: toggle(NETHER_BLOCKS, defaults.enable_nether_blocks),
+        enable_ore_props: toggle(ORE_PROPS, defaults.enable_ore_props),
+    };
+    *SETTINGS.write().expect("the settings lock is not poisoned") = read;
+}
+
+/// The settings generation uses now.
+fn settings() -> Settings {
+    *SETTINGS.read().expect("the settings lock is not poisoned")
+}
+
 /// Register the structure type and request the blocks it places, once at startup.
 pub fn register(r: &mut dyn Registrar, _cx: &RegistrationContext) {
+    declare_settings(r);
     let mut keys = Vec::with_capacity(templates::STATES.len());
     let mut seen = std::collections::BTreeMap::new();
     for state in templates::STATES {
@@ -98,8 +190,16 @@ fn generate(context: &mut dyn GenerationContext) -> Result<FoundStructure, Strin
         let mut rng = ContextRandom {
             random: context.random(),
         };
-        runtime::assemble(&config, [chunk.x, chunk.z], seed, min_y, max_y, &mut rng)
-            .map_err(|error| error.to_string())?
+        runtime::assemble(
+            &config,
+            &settings(),
+            [chunk.x, chunk.z],
+            seed,
+            min_y,
+            max_y,
+            &mut rng,
+        )
+        .map_err(|error| error.to_string())?
     };
     let states = states(context.metadata()).map_err(|error| error.0)?;
     let states = Arc::new(states);
@@ -136,7 +236,7 @@ impl StructurePiece for SmallDungeonPiece {
     fn post_process(&self, context: &mut dyn PieceContext) -> Result<(), StructureError> {
         let placed = {
             let mut world = ContextWorld { context };
-            let (placed, _) = runtime::decorate(&self.spec, &mut world)
+            let (placed, _) = runtime::decorate(&self.spec, &settings(), &mut world)
                 .map_err(|error| StructureError(error.to_string()))?;
             placed
         };
@@ -465,7 +565,7 @@ fn usage() -> Vec<String> {
 }
 
 fn status() -> Vec<String> {
-    let mut lines = runtime::status_lines();
+    let mut lines = runtime::status_lines(&settings());
     if let Some(refusal) = REFUSAL
         .lock()
         .expect("the refusal slot is not poisoned")

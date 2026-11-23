@@ -86,5 +86,17 @@
   "text.autoconfig.betterdungeons-fabric-1_21.option.betterDungeons.smallNetherDungeon.blazesDropBlazeRods": "Blazes From Spawners Drop Blaze Rods",
   "text.autoconfig.betterdungeons-fabric-1_21.option.betterDungeons.smallNetherDungeon.blazesDropBlazeRods.@Tooltip": "Whether blazes spawned from small Nether dungeons have a chance to drop blaze rods.",
   "betterdungeons.advancements.small_nether_dungeon.title": "A Special Addition",
-  "betterdungeons.advancements.small_nether_dungeon.description": "Find a Small Nether Dungeon"
+  "betterdungeons.advancements.small_nether_dungeon.description": "Find a Small Nether Dungeon",
+  "betterdungeons.configuration.enable_heads": "Enable Skulls & Heads",
+  "betterdungeons.configuration.enable_heads.tooltip": "Whether dungeons may place skeleton skulls and other mob heads. Applies when a world loads.",
+  "betterdungeons.configuration.enable_nether_blocks": "Enable Nether Blocks in Dungeons",
+  "betterdungeons.configuration.enable_nether_blocks.tooltip": "Some dungeons rarely place purely decorative Nether blocks such as soul sand, soul campfires and soul lanterns. Turn off to keep them out. Applies when a world loads.",
+  "betterdungeons.configuration.small_dungeon_max_banners": "Small Dungeon Max Banner Count",
+  "betterdungeons.configuration.small_dungeon_max_banners.tooltip": "The most banners a single small dungeon can have. Applies when a world loads.",
+  "betterdungeons.configuration.small_dungeon_min_chests": "Small Dungeon Min Chest Count",
+  "betterdungeons.configuration.small_dungeon_min_chests.tooltip": "The fewest chests a single small dungeon is guaranteed. Applies when a world loads.",
+  "betterdungeons.configuration.small_dungeon_max_chests": "Small Dungeon Max Chest Count",
+  "betterdungeons.configuration.small_dungeon_max_chests.tooltip": "The most chests a single small dungeon can have. Applies when a world loads.",
+  "betterdungeons.configuration.small_dungeon_ore_props": "Allow Ore Blocks in Corners",
+  "betterdungeons.configuration.small_dungeon_ore_props.tooltip": "Whether small dungeons may rarely place ore blocks in their corner props. When off, those ores become air. Applies when a world loads."
 }

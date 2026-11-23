@@ -2,7 +2,8 @@
 //!
 //! | Moment | What the port does |
 //! |---|---|
-//! | [`Mod::register`] | registers the structure types `betterdungeons:small_dungeon_type` and `betterdungeons:spider_dungeon_type` and requests the blocks they place |
+//! | [`Mod::register`] | registers the structure types `betterdungeons:small_dungeon_type` and `betterdungeons:spider_dungeon_type`, the settings, and requests the blocks they place |
+//! | [`Mod::server_about_to_start`] | reads the settings the server's generation uses |
 //! | [`Mod::register_commands`] | registers `/betterdungeons status`, answered from [`runtime`] |
 //!
 //! The structure's own code lives on the registered type: [`support::SmallDungeonType`]
@@ -23,7 +24,10 @@ pub mod spider_type;
 pub mod support;
 pub mod templates;
 
-use mod_api::{self, Hooks, RegisterCommandsEvent, Registrar, RegistrationContext, ServerHost};
+use mod_api::{
+    self, Hooks, RegisterCommandsEvent, Registrar, RegistrationContext, ServerAboutToStartEvent,
+    ServerHost,
+};
 
 #[derive(Default)]
 struct Mod;
@@ -33,6 +37,11 @@ impl Hooks for Mod {
     /// Once, at startup: the structure type and the blocks it places.
     fn register(&self, r: &mut dyn Registrar, cx: &RegistrationContext) {
         support::register(r, cx);
+    }
+
+    /// Before the server's worlds load: the settings this server's generation uses.
+    fn server_about_to_start(&self, host: &mut dyn ServerHost, _: &mut ServerAboutToStartEvent) {
+        support::read_settings(&*host);
     }
 
     /// Declare `/betterdungeons …` in the server's command tree.

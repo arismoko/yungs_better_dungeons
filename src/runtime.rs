@@ -339,6 +339,7 @@ pub struct Assembly {
 /// not carry.
 pub fn assemble(
     config: &Config,
+    settings: &Settings,
     chunk: [i32; 2],
     seed: i64,
     min_y: i32,
@@ -452,7 +453,7 @@ pub fn assemble(
         }
     }
 
-    plan_counts(&mut pieces)?;
+    plan_counts(&mut pieces, settings)?;
 
     Ok(Assembly {
         position: centre,
@@ -905,19 +906,50 @@ impl World for NoWorld {
 }
 
 /// The dungeon's own settings, from the jar's config defaults.
-pub mod settings {
-    /// `smallDungeons.bannerMaxCount`: at most this many banners per dungeon.
-    pub const BANNER_MAX_COUNT: i32 = 2;
+/// The original's world-restart settings this code reads (`ConfigModule`), with its defaults.
+///
+/// The game keeps the player's values; [`crate::support`] reads them when a server is about to
+/// start, as NeoForge applies a `worldRestart` config value only then.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Settings {
+    /// `smallDungeons.bannerMaxCount`: at most this many banners per dungeon (0 to 8).
+    pub banner_max_count: i32,
     /// `smallDungeons.chestMinCount`: at least this many chests per dungeon.
-    pub const CHEST_MIN_COUNT: i32 = 1;
+    pub chest_min_count: i32,
     /// `smallDungeons.chestMaxCount`: at most this many chests per dungeon.
-    pub const CHEST_MAX_COUNT: i32 = 2;
+    pub chest_max_count: i32,
     /// `general.enableHeads`: skulls stay.
-    pub const ENABLE_HEADS: bool = true;
+    pub enable_heads: bool,
     /// `general.enableNetherBlocks`: soul blocks stay.
-    pub const ENABLE_NETHER_BLOCKS: bool = true;
+    pub enable_nether_blocks: bool,
     /// `smallDungeons.enableOreProps`: ore props stay.
-    pub const ENABLE_ORE_PROPS: bool = true;
+    pub enable_ore_props: bool,
+}
+
+impl Settings {
+    /// `ConfigModule`'s defaults.
+    pub const DEFAULT: Self = Self {
+        banner_max_count: 2,
+        chest_min_count: 1,
+        chest_max_count: 2,
+        enable_heads: true,
+        enable_nether_blocks: true,
+        enable_ore_props: true,
+    };
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self::DEFAULT
+    }
+}
+
+/// What a processor step reads and keeps across a structure: the settings, and the counts so far.
+pub struct Decoration<'a> {
+    /// The settings generation runs with.
+    pub settings: &'a Settings,
+    /// The chests and banners kept so far.
+    pub counts: Counts,
 }
 
 /// The chests and banners kept so far in a structure.
@@ -938,12 +970,19 @@ pub struct Counts {
 ///
 /// [`Error::Missing`] when the piece's processor list is not carried,
 /// [`Error::UnknownTemplate`] when its template is not.
-pub fn decorate(piece: &Piece, world: &mut dyn World) -> Result<(Vec<Placed>, Counts), Error> {
+pub fn decorate(
+    piece: &Piece,
+    settings: &Settings,
+    world: &mut dyn World,
+) -> Result<(Vec<Placed>, Counts), Error> {
     let template = piece.template()?;
     let steps = processor_steps(piece.processors)?;
-    let mut counts = Counts {
-        chests: piece.chests_before,
-        banners: piece.banners_before,
+    let mut deco = Decoration {
+        settings,
+        counts: Counts {
+            chests: piece.chests_before,
+            banners: piece.banners_before,
+        },
     };
     let mut out = Vec::with_capacity(template.blocks.len() + 8);
     for block in template.blocks {
@@ -957,15 +996,7 @@ pub fn decorate(piece: &Piece, world: &mut dyn World) -> Result<(Vec<Placed>, Co
         let mut payload = payload_of(*block, state);
         let mut keep = true;
         for step in steps {
-            match apply(
-                step,
-                piece,
-                pos,
-                &mut state,
-                &mut payload,
-                &mut counts,
-                world,
-            ) {
+            match apply(step, piece, pos, &mut state, &mut payload, &mut deco, world) {
                 Applied::Keep => {}
                 Applied::Skip => {
                     keep = false;
@@ -996,7 +1027,7 @@ pub fn decorate(piece: &Piece, world: &mut dyn World) -> Result<(Vec<Placed>, Co
             payload: Payload::None,
         });
     }
-    Ok((out, counts))
+    Ok((out, deco.counts))
 }
 
 /// The steps of a processor list; `minecraft:empty` is the empty chain.
@@ -1069,7 +1100,7 @@ fn apply(
     pos: [i32; 3],
     state: &mut u16,
     payload: &mut Payload,
-    counts: &mut Counts,
+    deco: &mut Decoration<'_>,
     world: &mut dyn World,
 ) -> Applied {
     let name = templates::STATES[*state as usize].name;
@@ -1082,7 +1113,7 @@ fn apply(
                 return Applied::Keep;
             };
             let mut stream = Stream::new(piece, pos, 0);
-            if counts.banners >= settings::BANNER_MAX_COUNT {
+            if deco.counts.banners >= deco.settings.banner_max_count {
                 *state = state_named("minecraft:cave_air").unwrap_or(*state);
                 *payload = Payload::None;
                 return Applied::Keep;
@@ -1102,7 +1133,7 @@ fn apply(
                 *state = replacement;
             }
             *payload = Payload::Banner(banner);
-            counts.banners += 1;
+            deco.counts.banners += 1;
             Applied::Keep
         }
         pools::KIND_SPAWNER => {
@@ -1145,14 +1176,14 @@ fn apply(
             if !name.ends_with("_skull") && !name.ends_with("_head") {
                 return Applied::Keep;
             }
-            if !settings::ENABLE_HEADS {
+            if !deco.settings.enable_heads {
                 *state = state_named("minecraft:cave_air").unwrap_or(*state);
                 *payload = Payload::None;
             }
             Applied::Keep
         }
         pools::KIND_NETHER_BLOCK => {
-            if settings::ENABLE_NETHER_BLOCKS {
+            if deco.settings.enable_nether_blocks {
                 return Applied::Keep;
             }
             let replacement = match name {
@@ -1184,12 +1215,12 @@ fn apply(
                 return Applied::Keep;
             }
             let mut stream = Stream::new(piece, pos, 2);
-            if counts.chests < settings::CHEST_MIN_COUNT {
-                counts.chests += 1;
+            if deco.counts.chests < deco.settings.chest_min_count {
+                deco.counts.chests += 1;
                 return Applied::Keep;
             }
-            if counts.chests < settings::CHEST_MAX_COUNT && stream.float() <= 0.2 {
-                counts.chests += 1;
+            if deco.counts.chests < deco.settings.chest_max_count && stream.float() <= 0.2 {
+                deco.counts.chests += 1;
                 return Applied::Keep;
             }
             *state = state_named("minecraft:cave_air").unwrap_or(*state);
@@ -1236,7 +1267,7 @@ fn apply(
             }
         }
         pools::KIND_ORE => {
-            if settings::ENABLE_ORE_PROPS {
+            if deco.settings.enable_ore_props {
                 return Applied::Keep;
             }
             if is_ore(name) {
@@ -1405,12 +1436,12 @@ fn is_ore(name: &str) -> bool {
 
 /// The structure-wide chest and banner counts each piece starts from, so a
 /// piece's decoration does not depend on which chunk asks for it.
-fn plan_counts(pieces: &mut [Piece]) -> Result<(), Error> {
+fn plan_counts(pieces: &mut [Piece], settings: &Settings) -> Result<(), Error> {
     let (mut chests, mut banners) = (0, 0);
     for piece in pieces.iter_mut() {
         piece.chests_before = chests;
         piece.banners_before = banners;
-        let (_, after) = decorate(piece, &mut NoWorld)?;
+        let (_, after) = decorate(piece, settings, &mut NoWorld)?;
         chests = after.chests;
         banners = after.banners;
     }
@@ -1422,7 +1453,7 @@ fn plan_counts(pieces: &mut [Piece]) -> Result<(), Error> {
 ///
 /// The assembly is at chunk `(2, 3)` with seed `20261105`, the numbers
 /// `notes.md` records; `cargo test` pins the same ones.
-pub fn status_lines() -> Vec<std::string::String> {
+pub fn status_lines(settings: &Settings) -> Vec<std::string::String> {
     let mut lines = Vec::new();
     let structure = &pools::STRUCTURE;
     lines.push(format!(
@@ -1457,11 +1488,9 @@ pub fn status_lines() -> Vec<std::string::String> {
     ));
     lines.push(format!(
         "  settings: banners <= {}, chests {}..={}",
-        settings::BANNER_MAX_COUNT,
-        settings::CHEST_MIN_COUNT,
-        settings::CHEST_MAX_COUNT
+        settings.banner_max_count, settings.chest_min_count, settings.chest_max_count
     ));
-    match sample_assembly() {
+    match sample_assembly(settings) {
         Ok(assembly) => {
             lines.push(format!(
                 "  sample: chunk (2, 3), seed 20261105 -> {} pieces at {}",
@@ -1492,7 +1521,7 @@ pub fn status_lines() -> Vec<std::string::String> {
 /// # Errors
 ///
 /// Whatever [`assemble`] refuses.
-pub fn sample_assembly() -> Result<Assembly, Error> {
+pub fn sample_assembly(settings: &Settings) -> Result<Assembly, Error> {
     let config = Config {
         start_pool: pools::STRUCTURE.start_pool.to_owned(),
         start_jigsaw: pools::STRUCTURE.start_jigsaw.map(str::to_owned),
@@ -1502,7 +1531,15 @@ pub fn sample_assembly() -> Result<Assembly, Error> {
         use_expansion_hack: pools::STRUCTURE.use_expansion_hack,
     };
     let mut rng = SplitMix::new(SAMPLE_SEED);
-    assemble(&config, SAMPLE_CHUNK, SAMPLE_SEED, -64, 319, &mut rng)
+    assemble(
+        &config,
+        settings,
+        SAMPLE_CHUNK,
+        SAMPLE_SEED,
+        -64,
+        319,
+        &mut rng,
+    )
 }
 
 /// The seed the readout's assembly uses.
@@ -1539,7 +1576,16 @@ mod tests {
     }
 
     fn assembly(seed: i64) -> Assembly {
-        assemble(&config(), [2, 3], seed, -64, 319, &mut SplitMix::new(seed)).expect("assembly")
+        assemble(
+            &config(),
+            &Settings::DEFAULT,
+            [2, 3],
+            seed,
+            -64,
+            319,
+            &mut SplitMix::new(seed),
+        )
+        .expect("assembly")
     }
 
     #[test]
@@ -1882,7 +1928,15 @@ mod tests {
         wrong.size = 12;
         assert!(!config_supported(&wrong));
         assert!(matches!(
-            assemble(&wrong, [0, 0], 1, -64, 319, &mut SplitMix::new(1)),
+            assemble(
+                &wrong,
+                &Settings::DEFAULT,
+                [0, 0],
+                1,
+                -64,
+                319,
+                &mut SplitMix::new(1)
+            ),
             Err(Error::Unsupported(_))
         ));
 
@@ -1891,7 +1945,15 @@ mod tests {
         let mut other_anchor = config();
         other_anchor.start_jigsaw = Some("betterdungeons:another_anchor".to_owned());
         assert!(matches!(
-            assemble(&other_anchor, [0, 0], 1, -64, 319, &mut SplitMix::new(1)),
+            assemble(
+                &other_anchor,
+                &Settings::DEFAULT,
+                [0, 0],
+                1,
+                -64,
+                319,
+                &mut SplitMix::new(1)
+            ),
             Err(Error::Unsupported(_))
         ));
     }
@@ -1904,7 +1966,8 @@ mod tests {
             let mut banners = 0;
             let mut saw_chest = false;
             for piece in &assembly.pieces {
-                let (blocks, _) = decorate(piece, &mut NoWorld).expect("decorated");
+                let (blocks, _) =
+                    decorate(piece, &Settings::DEFAULT, &mut NoWorld).expect("decorated");
                 for block in &blocks {
                     match block.payload {
                         Payload::Chest(_) => {
@@ -1919,6 +1982,54 @@ mod tests {
             assert!(saw_chest, "seed {seed}: a dungeon keeps a chest");
             assert!(chests <= 2, "seed {seed}: {chests} chests");
             assert!(banners <= 2, "seed {seed}: {banners} banners");
+        }
+    }
+
+    #[test]
+    fn settings_turned_off_keep_chests_banners_heads_and_ores_out() {
+        let off = Settings {
+            banner_max_count: 0,
+            chest_min_count: 0,
+            chest_max_count: 0,
+            enable_heads: false,
+            enable_nether_blocks: false,
+            enable_ore_props: false,
+        };
+        let config = config();
+        for seed in 0..64 {
+            let assembly = assemble(
+                &config,
+                &off,
+                [2, 3],
+                seed,
+                -64,
+                319,
+                &mut SplitMix::new(seed),
+            )
+            .expect("assembly");
+            for piece in &assembly.pieces {
+                let (blocks, _) = decorate(piece, &off, &mut NoWorld).expect("decorated");
+                for block in &blocks {
+                    let name = templates::STATES[block.state as usize].name;
+                    assert!(
+                        !matches!(block.payload, Payload::Chest(_) | Payload::Banner(_)),
+                        "seed {seed}: {name} kept its payload"
+                    );
+                    assert!(
+                        !name.ends_with("_skull")
+                            && !name.ends_with("_head")
+                            && !matches!(
+                                name,
+                                "minecraft:soul_sand"
+                                    | "minecraft:soul_soil"
+                                    | "minecraft:soul_campfire"
+                                    | "minecraft:soul_lantern"
+                            )
+                            && !is_ore(name),
+                        "seed {seed}: {name} placed"
+                    );
+                }
+            }
         }
     }
 
@@ -1938,7 +2049,7 @@ mod tests {
         let assembly = assembly(3);
         let mut chests = 0;
         for piece in &assembly.pieces {
-            let (blocks, _) = decorate(piece, &mut Air).expect("decorated");
+            let (blocks, _) = decorate(piece, &Settings::DEFAULT, &mut Air).expect("decorated");
             chests += blocks
                 .iter()
                 .filter(|block| matches!(block.payload, Payload::Chest(_)))
@@ -1947,7 +2058,8 @@ mod tests {
         // `chestMinCount` guarantees one; `chestMaxCount` caps the rest at 20 %
         // per further chest, so a dungeon keeps one or two.
         assert!(
-            (settings::CHEST_MIN_COUNT as usize..=settings::CHEST_MAX_COUNT as usize)
+            (Settings::DEFAULT.chest_min_count as usize
+                ..=Settings::DEFAULT.chest_max_count as usize)
                 .contains(&chests),
             "{chests} chests"
         );
@@ -1978,7 +2090,6 @@ mod tests {
         }
         let mut state = pickle.expect("a sea pickle");
         let mut payload = Payload::None;
-        let mut counts = Counts::default();
         let step = pools::PROCESSOR_LISTS
             .iter()
             .flat_map(|list| list.steps)
@@ -1990,7 +2101,10 @@ mod tests {
             [1, 2, 3],
             &mut state,
             &mut payload,
-            &mut counts,
+            &mut Decoration {
+                settings: &Settings::DEFAULT,
+                counts: Counts::default(),
+            },
             &mut NoWorld,
         );
         let name = templates::STATES[state as usize].name;
@@ -2035,7 +2149,6 @@ mod tests {
         };
         let mut state = glass;
         let mut payload = Payload::None;
-        let mut counts = Counts::default();
         let step = pools::PROCESSOR_LISTS
             .iter()
             .flat_map(|list| list.steps)
@@ -2047,7 +2160,10 @@ mod tests {
             [3, 30, 3],
             &mut state,
             &mut payload,
-            &mut counts,
+            &mut Decoration {
+                settings: &Settings::DEFAULT,
+                counts: Counts::default(),
+            },
             &mut Column { air_below: 20 },
         );
         match applied {
@@ -2100,7 +2216,10 @@ mod tests {
             [1, 2, 3],
             &mut state,
             &mut payload,
-            &mut Counts::default(),
+            &mut Decoration {
+                settings: &Settings::DEFAULT,
+                counts: Counts::default(),
+            },
             &mut NoWorld,
         );
         assert_eq!(
@@ -2112,14 +2231,17 @@ mod tests {
 
     #[test]
     fn the_readout_names_the_registered_type_and_a_piece_count() {
-        let lines = status_lines();
+        let lines = status_lines(&Settings::DEFAULT);
         let text = lines.join("\n");
         assert!(text.contains("betterdungeons:small_dungeon"), "{text}");
         assert!(text.contains("betterdungeons:small_dungeon_type"), "{text}");
         assert!(text.contains("16 templates"), "{text}");
         assert!(text.contains("2 pools"), "{text}");
         assert!(text.contains("4 processor lists"), "{text}");
-        let pieces = sample_assembly().expect("the sample assembly").pieces.len();
+        let pieces = sample_assembly(&Settings::DEFAULT)
+            .expect("the sample assembly")
+            .pieces
+            .len();
         assert_eq!(pieces, 5, "one shell plus four loot piles");
         assert!(text.contains(&format!("-> {pieces} pieces")), "{text}");
     }
