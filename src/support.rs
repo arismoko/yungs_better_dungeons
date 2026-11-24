@@ -213,7 +213,11 @@ fn generate(context: &mut dyn GenerationContext) -> Result<FoundStructure, Strin
     }
     let position = assembly.position;
     *REFUSAL.lock().expect("the refusal slot is not poisoned") = None;
-    Ok(FoundStructure { position, pieces })
+    Ok(FoundStructure {
+        position,
+        pieces,
+        ..FoundStructure::default()
+    })
 }
 
 /// One piece of the dungeon: its template, rotation, origin and decoration counts.

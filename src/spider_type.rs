@@ -94,6 +94,7 @@ impl StructureType for SpiderDungeonType {
         Some(FoundStructure {
             position: start,
             pieces,
+            ..FoundStructure::default()
         })
     }
 
